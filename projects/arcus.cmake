@@ -1,6 +1,17 @@
 set(extra_cmake_args "")
 if(BUILD_OS_WINDOWS)
-    set(extra_cmake_args -DCMAKE_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/libs -DMSVC_STATIC_RUNTIME=ON)
+    set(extra_cmake_args
+        -DCMAKE_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/libs
+        -DMSVC_STATIC_RUNTIME=ON
+        -DCMAKE_EXE_LINKER_FLAGS=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_EXE_LINKER_FLAGS_RELEASE=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_MODULE_LINKER_FLAGS=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_MODULE_LINKER_FLAGS_RELEASE=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_SHARED_LINKER_FLAGS=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_SHARED_LINKER_FLAGS_RELEASE=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_STATIC_LINKER_FLAGS=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+        -DCMAKE_STATIC_LINKER_FLAGS_RELEASE=/LIBPATH:"${CMAKE_INSTALL_PREFIX}/libs" /machine:x64
+    )
 elseif(BUILD_OS_OSX)
     if(CMAKE_OSX_DEPLOYMENT_TARGET)
         list(APPEND extra_cmake_args
@@ -14,11 +25,6 @@ elseif(BUILD_OS_OSX)
     endif()
 endif()
 
-set(python3_find_strategy VERSION)
-if(BUILD_OS_LINUX)
-    set(python3_find_strategy LOCATION)
-endif()
-
 ExternalProject_Add(Arcus
     GIT_REPOSITORY https://github.com/ultimaker/libArcus.git
     GIT_TAG origin/${CURA_ARCUS_BRANCH_OR_TAG}
@@ -29,7 +35,6 @@ ExternalProject_Add(Arcus
                -DBUILD_STATIC=ON
                -DBUILD_PYTHON=ON
                -DBUILD_EXAMPLES=OFF
-               -DPython3_FIND_STRATEGY=${python3_find_strategy}
                ${extra_cmake_args}
 )
 
@@ -54,3 +59,5 @@ if(BUILD_OS_WINDOWS)
 
     SetProjectDependencies(TARGET Arcus-MinGW DEPENDS Sip Protobuf-MinGW Arcus)
 endif()
+
+
