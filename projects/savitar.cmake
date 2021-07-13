@@ -1,5 +1,5 @@
 if(BUILD_OS_LINUX)
-    set(savitar_cmake_command PATH=${CMAKE_INSTALL_PREFIX}/bin/:$ENV{PATH} LD_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/lib/ PYTHONPATH=${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages/:${CMAKE_INSTALL_PREFIX}/lib/python3.5:${CMAKE_INSTALL_PREFIX}/lib/python3.5/site-packages/ ${CMAKE_COMMAND})
+    set(savitar_cmake_command PATH=${CMAKE_INSTALL_PREFIX}/bin/:$ENV{PATH} LD_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/lib/ PYTHONPATH=${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages/:${CMAKE_INSTALL_PREFIX}/lib/python3.8:${CMAKE_INSTALL_PREFIX}/lib/python3.8/site-packages/ ${CMAKE_COMMAND})
 else()
     set(savitar_cmake_command ${CMAKE_COMMAND})
 endif()
@@ -20,21 +20,15 @@ elseif(BUILD_OS_OSX)
     endif()
 endif()
 
-set(python3_find_strategy VERSION)
-if(BUILD_OS_LINUX)
-    set(python3_find_strategy LOCATION)
-endif()
-
 ExternalProject_Add(Savitar
     GIT_REPOSITORY https://github.com/ultimaker/libSavitar.git
-    GIT_TAG origin/${CURA_SAVITAR_BRANCH_OR_TAG}
+    GIT_TAG ${CURA_SAVITAR_BRANCH_OR_TAG}
     GIT_SHALLOW 1
     CMAKE_COMMAND ${savitar_cmake_command}
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
                -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DBUILD_STATIC=ON
-               -DPython3_FIND_STRATEGY=${python3_find_strategy}
                ${extra_cmake_args}
 )
 

@@ -1,9 +1,9 @@
+#Copyright (c) 2020 Ultimaker B.V.
+#cura-build-environment is released under the terms of the AGPLv3 or higher.
+
 project(cura-build-environment)
 
 cmake_minimum_required(VERSION 3.6)
-
-include(ProcessorCount)
-ProcessorCount(N)
 
 if(NOT CURA_ARCUS_BRANCH_OR_TAG)
     set(CURA_ARCUS_BRANCH_OR_TAG "master")
@@ -26,8 +26,6 @@ include(GNUInstallDirs)
 include(BuildPlatformDetection)
 include(SetProjectDependencies)
 
-option(INCLUDE_DEVEL "Include development tools" OFF)
-
 # Hard-code the CPython executable to use later because all find_package()
 # commands are executed when the Makefiles are generated. Because we need to
 # compile CPython first, all other projects that require Python must use our
@@ -42,7 +40,6 @@ else()
     # All other OSs like OSX
     set(Python3_EXECUTABLE ${CMAKE_INSTALL_PREFIX}/bin/python3)
 endif()
-set(Python3_FIND_STRATEGY LOCATION)
 
 # Build projects step
 add_custom_target(projects ALL COMMENT "Building Projects...")
@@ -53,24 +50,15 @@ if(BUILD_OS_LINUX)
     execute_process(
         COMMAND mkdir -p "${CMAKE_INSTALL_PREFIX}/lib"
     )
-    if(NOT EXISTS "${CMAKE_INSTALL_PREFIX}/lib64")
-	    execute_process(
-		COMMAND ln -s "lib" "lib64"
-		WORKING_DIRECTORY "${CMAKE_INSTALL_PREFIX}"
-	    )
-    endif()
+    execute_process(
+        COMMAND ln -s "lib" "lib64"
+        WORKING_DIRECTORY "${CMAKE_INSTALL_PREFIX}"
+    )
 endif()
 
 file(GLOB _projects projects/*.cmake)
 foreach(_project ${_projects})
     include(${_project})
 endforeach()
-
-if(INCLUDE_DEVEL)
-    file(GLOB _devel_projects devel/*.cmake)
-    foreach(_devel_project ${_devel_projects})
-        include(${_devel_project})
-    endforeach()
-endif()
 
 ProcessProjectDependencies(TARGET projects)
