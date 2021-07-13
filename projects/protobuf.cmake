@@ -18,7 +18,7 @@ set(protobuf_configure_args
     -DCMAKE_CXX_FLAGS=${protobuf_cxx_flags}
     -Dprotobuf_BUILD_TESTS=OFF
     -Dprotobuf_BUILD_EXAMPLES=OFF
-    -Dprotobuf_BUILD_SHARED_LIBS=OFF
+    -Dprotobuf_BUILD_SHARED_LIBS=ON
     -Dprotobuf_WITH_ZLIB=OFF
 )
 

@@ -27,7 +27,7 @@ endif()
 
 ExternalProject_Add(Arcus
     GIT_REPOSITORY https://github.com/ultimaker/libArcus.git
-    GIT_TAG origin/${CURA_ARCUS_BRANCH_OR_TAG}
+    GIT_TAG ${CURA_ARCUS_BRANCH_OR_TAG}
     GIT_SHALLOW 1
     CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
